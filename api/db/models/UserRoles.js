@@ -5,7 +5,7 @@ const schema = mongoose.Schema({
     role_id: { type: mongoose.SchemaTypes.ObjectId, required: true }
 }, {
     versionKey: false,
-    timstamps: {
+    timestamps: {
         createdAt: "created_at",
         updatedAt: "updated_at"
     }
