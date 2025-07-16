@@ -1,4 +1,8 @@
 const mongoose = require("mongoose");
+const is = require("is_js");
+const { PASS_LENGTH, HTTP_CODES } = require("../../config/Enum");
+const CustomError = require("../../lib/Error");
+const bcrypt = require("bcrypt");
 
 const schema = mongoose.Schema({
     email: { type: String, required: true, unique: true },
@@ -16,6 +20,19 @@ const schema = mongoose.Schema({
 });
 
 class Users extends mongoose.Model {
+
+    validPassword(password) {
+        console.log("Gelen şifre:", password);
+        console.log("Hash şifre:", this.password);
+        console.log("Karşılaştırma sonucu:", bcrypt.compareSync(password, this.password));
+        return bcrypt.compareSync(password, this.password);
+    }
+
+    static validateFieldsBeforeAuth(email, password) {
+        if (typeof password !== "string" || password.length < PASS_LENGTH || is.not.email(email))
+            throw new CustomError(HTTP_CODES.UNAUTHORIZED, "Validation Error", "email or password wrong");
+        return null;
+    }
 
 }
 
